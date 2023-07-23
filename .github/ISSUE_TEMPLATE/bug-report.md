@@ -7,4 +7,9 @@ assignees: ''
 
 ---
 
+## Info
+
+- Minecraft Version:
+- SchnLib Version:
+
 ## Description
