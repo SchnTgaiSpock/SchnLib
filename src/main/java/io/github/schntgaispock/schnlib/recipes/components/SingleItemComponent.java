@@ -31,7 +31,6 @@ public class SingleItemComponent extends RecipeComponent<ItemStack> {
 
     // SingleRecipeComponents do not have to deal with group components in recipes
     @Override
-    @SuppressWarnings("null")
     public boolean matches(ItemStack item) {
         if (item == null) {
             return component.getType() == Material.AIR;

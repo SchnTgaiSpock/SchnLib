@@ -20,8 +20,8 @@ public class ItemTheme {
     private @Getter ChatColor loreColor = ChatColor.GRAY;
     private @Getter ChatColor highlightColor = ChatColor.YELLOW;
     private @Getter ChatColor suffixColor = ChatColor.DARK_AQUA;
-    private @Getter EnumSet<ItemThemeFlags> flags;
-    private @Getter String prefix;
+    private @Getter EnumSet<ItemThemeFlags> flags = EnumSet.noneOf(ItemThemeFlags.class);
+    private @Getter String prefix = "";
 
     public ItemTheme nameColor(ChatColor color) {
         nameColor = color;

@@ -1,5 +1,7 @@
 package io.github.schntgaispock.schnlib;
 
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
@@ -11,8 +13,17 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class SchnLib {
-    
+
+    public static enum Options {
+        /**
+         * Don't show warning messages when adding an unfinalized
+         * <code>TrackSection</code> to a <code>Track</code>
+         */
+        IGNORE_UNFINALIZED_TRACK_SECTIONS;
+    }
+
     private static @Getter @Nullable Plugin addon;
+    private static @Getter Set<Options> options = EnumSet.noneOf(Options.class);
 
     public static void registerAddon(Plugin addon) {
         SchnLib.addon = addon;

@@ -5,7 +5,7 @@ import org.bukkit.Sound;
 
 import lombok.Getter;
 
-public class Chord implements PlayableComponent {
+public class Chord {
 
     private final @Getter float volume;
     private final @Getter float pitch;
@@ -19,7 +19,6 @@ public class Chord implements PlayableComponent {
         this.sounds = sounds;
     }
 
-    @Override
     public void play(Location location, float volume) {
         for (Sound sound : sounds) {
             location.getWorld().playSound(location, sound, volume, volume);

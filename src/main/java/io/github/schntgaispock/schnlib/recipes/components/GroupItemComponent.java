@@ -39,7 +39,6 @@ public class GroupItemComponent extends RecipeComponent<Set<ItemStack>> {
     }
 
     @Override
-    @SuppressWarnings("null")
     public boolean matches(ItemStack item) {
         if (item == null) {
             return component.isEmpty();
