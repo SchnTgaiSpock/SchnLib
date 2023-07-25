@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import io.github.thebusybiscuit.slimefun4.libraries.commons.lang.Validate;
@@ -125,6 +126,7 @@ public class Counter<T> {
         min = null;
     }
 
+    @Nonnull
     private Pair<Integer, Integer> findMaxMin() {
         int maxHash = 0;
         int maxAmount = 0;
@@ -132,7 +134,7 @@ public class Counter<T> {
         int minAmount = Integer.MAX_VALUE;
 
         if (map.size() == 0) {
-            return new Pair<Integer, Integer>(null, null);
+            return new Pair<>(null, null);
         }
 
         for (Map.Entry<Integer, Pair<T, Integer>> entry : map.entrySet()) {
@@ -150,19 +152,23 @@ public class Counter<T> {
         return new Pair<>(maxHash, minHash);
     }
 
+    @Nonnull
     public Pair<T, Integer> max() {
         return map.containsKey(max) ? map.get(max) : new Pair<>(null, 0);
     }
 
+    @Nonnull
     public Pair<T, Integer> min() {
         return map.containsKey(min) ? map.get(min) : new Pair<>(null, Integer.MAX_VALUE);
     }
 
+    @Nonnull
     public Collection<Pair<T, Integer>> entries() {
         return map.values();
     }
 
     @Override
+    @Nonnull
     public String toString() {
         final StringBuilder string = new StringBuilder("{");
         for (Map.Entry<Integer, Pair<T, Integer>> key : map.entrySet()) {
@@ -175,6 +181,7 @@ public class Counter<T> {
     /**
      * Useful for debugging
      */
+    @Nonnull
     public String details() {
         final StringBuilder string = new StringBuilder(toString());
         string.deleteCharAt(string.length() - 1)
@@ -188,6 +195,7 @@ public class Counter<T> {
         return string.toString();
     }
 
+    @Nonnull
     public Stream<Pair<T, Integer>> stream() {
         return map.values().stream();
     }

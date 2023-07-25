@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.schntgaispock.schnlib</groupId>
@@ -9,6 +11,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lombok.sourceDirectory>${project.basedir}/src/main/java</lombok.sourceDirectory>
     </properties>
 
     <repositories>
@@ -40,16 +43,50 @@
 
         <plugins>
             <plugin>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok-maven-plugin</artifactId>
+              <version>1.18.20.0</version>
+              <executions>
+                <execution>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>delombok</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                  <sourceDirectory>src/main/java</sourceDirectory>
+                  <outputDirectory>${project.basedir}/target/delombok</outputDirectory>
+                  <addOutputDirectory>false</addOutputDirectory>
+                  <encoding>UTF-8</encoding>
+              </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <version>3.5.0</version>
+                <configuration>
+                    <sourcepath>${project.basedir}/target/delombok</sourcepath>
+                    <doclint>none</doclint>
+                    <detectLinks>true</detectLinks>
+                    <dependencyLinks>
+                        <dependencyLink>
+                            <groupId>com.github.Slimefun</groupId>
+                            <artifactId>Slimefun4</artifactId>
+                            <url>https://slimefun.github.io/javadocs/Slimefun4/docs</url>
+                        </dependencyLink>
+                        <dependencyLink>
+                            <groupId>org.spigotmc</groupId>
+                            <artifactId>spigot-api</artifactId>
+                            <url>https://hub.spigotmc.org/javadocs/spigot</url>
+                        </dependencyLink>
+                        <dependencyLink>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <url>https://projectlombok.org/api</url>
+                        </dependencyLink>
+                    </dependencyLinks>
+                </configuration>
             </plugin>
         </plugins>
     </build>

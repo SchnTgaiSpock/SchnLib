@@ -27,7 +27,6 @@ public class NavigationStack {
      * Returns the last menu inventory viewed by the player, or null
      * if there was none.
      * 
-     * @param player
      * @return
      */
     public @Nullable Inventory pop() {

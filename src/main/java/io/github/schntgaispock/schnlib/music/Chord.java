@@ -5,8 +5,15 @@ import org.bukkit.Sound;
 
 import lombok.Getter;
 
+/**
+ * This class represents a set of pitches to play a note at. Instrument info is
+ * kept in {@link Track}.
+ */
 public class Chord {
 
+    /**
+     * Test
+     */
     private final @Getter float volume;
     private final @Getter float[] pitches;
 
@@ -29,5 +36,5 @@ public class Chord {
             location.getWorld().playSound(location, instrument, trueVolume, pitch);
         }
     }
-    
+
 }
