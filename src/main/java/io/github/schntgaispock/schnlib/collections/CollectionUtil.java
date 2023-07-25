@@ -57,6 +57,12 @@ public class CollectionUtil {
         }
     }
 
+    public static <K, V> HashMap<K, V> shallowCopyHashMap(Map<K, V> map) {
+        final HashMap<K, V> newMap = new HashMap<>();
+        newMap.putAll(map);
+        return newMap;
+    }
+
     /**
      * Checks if an array only contains null values
      * 

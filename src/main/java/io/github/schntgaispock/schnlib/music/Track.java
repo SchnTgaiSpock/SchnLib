@@ -1,29 +1,34 @@
 package io.github.schntgaispock.schnlib.music;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.Location;
+import org.bukkit.Sound;
 
 import io.github.schntgaispock.schnlib.SchnLib;
 import io.github.schntgaispock.schnlib.SchnLib.Options;
+import io.github.schntgaispock.schnlib.collections.Pair;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@Getter 
+@RequiredArgsConstructor
 public class Track {
 
-    private final @Getter List<Chord> chords = new ArrayList<>();
-    private @Getter int duration = 0;
-    private final @Getter int ticksPerBeat;
-    private final @Getter float volume;
+    private final Map<Integer, Chord> chords;
+    private final float volume;
+    private final Sound instrument;
 
-    public Track(int ticksPerBeat, float volume) {
-        this.ticksPerBeat = ticksPerBeat;
-        this.volume = volume;
+    private int duration = 0;
+
+    public Track(float volume, Sound instrument) {
+        this(new HashMap<>(), volume, instrument);
     }
 
-    public Track add(Chord... chords) {
-        for (Chord chord : chords) {
-            this.chords.add(chord);
-            duration += chord.getDuration();
-        }
+    public Track add(int duration, Chord chord) {
+        this.duration += duration;
+        chords.put(this.duration, chord);
 
         return this;
     }
@@ -34,10 +39,10 @@ public class Track {
         }
 
         for (int i = 0; i < repeat; i++) {
-            for (Chord chord : section.getChords()) {
-                this.chords.add(chord);
+            for (Pair<Integer, Chord> pair : section.getChords()) {
+                this.duration += pair.first();
+                this.chords.put(this.duration, pair.second());
             }
-            duration += section.getDuration();
         }
 
         return this;
@@ -45,6 +50,16 @@ public class Track {
 
     public Track add(TrackSection section) {
         return add(section, 1);
+    }
+
+    public Track transpose(Sound instrument) {
+        return new Track(volume, instrument);
+    }
+
+    public void play(int beat, Location at) {
+        if (chords.containsKey(beat)) {
+            chords.get(beat).play(at, beat, instrument);
+        }
     }
 
 }

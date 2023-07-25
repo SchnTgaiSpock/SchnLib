@@ -22,6 +22,10 @@ public class ItemTheme {
     private @Getter ChatColor suffixColor = ChatColor.DARK_AQUA;
     private @Getter EnumSet<ItemThemeFlags> flags = EnumSet.noneOf(ItemThemeFlags.class);
     private @Getter String prefix = "";
+    
+    public ItemTheme(ItemThemeFlags... flags) {
+        this.flags.addAll(List.of(flags));
+    }
 
     public ItemTheme nameColor(ChatColor color) {
         nameColor = color;
@@ -40,11 +44,6 @@ public class ItemTheme {
 
     public ItemTheme suffixColor(ChatColor color) {
         suffixColor = color;
-        return this;
-    }
-
-    public ItemTheme flags(ItemThemeFlags... flags) {
-        this.flags.addAll(List.of(flags));
         return this;
     }
 
