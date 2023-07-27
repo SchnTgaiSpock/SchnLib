@@ -15,11 +15,6 @@ import lombok.experimental.UtilityClass;
 public class SchnLib {
 
     public static enum Options {
-        /**
-         * Don't show warning messages when adding an unfinalized
-         * <code>TrackSection</code> to a <code>Track</code>
-         */
-        IGNORE_UNFINALIZED_TRACK_SECTIONS;
     }
 
     private static @Getter @Nullable Plugin addon;

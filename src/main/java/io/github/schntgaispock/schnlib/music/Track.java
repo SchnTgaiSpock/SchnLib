@@ -6,8 +6,6 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
-import io.github.schntgaispock.schnlib.SchnLib;
-import io.github.schntgaispock.schnlib.SchnLib.Options;
 import io.github.schntgaispock.schnlib.collections.Pair;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +32,6 @@ public class Track {
     }
 
     public Track add(TrackSection section, int repeat) {
-        if (!section.finalized && !SchnLib.getOptions().contains(Options.IGNORE_UNFINALIZED_TRACK_SECTIONS)) {
-            SchnLib.warn("TrackSection is not finalized! Changes in notes will not be reflected in this track");
-        }
-
         for (int i = 0; i < repeat; i++) {
             for (Pair<Integer, Chord> pair : section.getChords()) {
                 this.duration += pair.first();

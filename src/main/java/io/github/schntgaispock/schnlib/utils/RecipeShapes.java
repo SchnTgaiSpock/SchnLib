@@ -10,7 +10,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class RecipeUtil {
+public class RecipeShapes {
 
     public static ItemStack[] empty() {
         return new ItemStack[9];
@@ -35,7 +35,7 @@ public class RecipeUtil {
     }
 
     public static ItemStack[] collection(ItemStack... items) {
-        return RecipeUtil.collection(items, 9);
+        return RecipeShapes.collection(items, 9);
     }
 
     private static ItemStack[] collection(ItemStack[] items, int maxLength) {
@@ -53,7 +53,7 @@ public class RecipeUtil {
     }
 
     public static ItemStack[] cyclic(ItemStack outer) {
-        return RecipeUtil.cyclic(outer, null);
+        return RecipeShapes.cyclic(outer, null);
     }
 
     public static ItemStack[] cyclicAlternating(ItemStack corner, ItemStack middle, ItemStack inner) {
@@ -61,7 +61,7 @@ public class RecipeUtil {
     }
 
     public static ItemStack[] cyclicAlternating(ItemStack corner, ItemStack middle) {
-        return RecipeUtil.cyclicAlternating(corner, middle, null);
+        return RecipeShapes.cyclicAlternating(corner, middle, null);
     }
 
     public static ItemStack[] row(ItemStack item, int rowNumber) {

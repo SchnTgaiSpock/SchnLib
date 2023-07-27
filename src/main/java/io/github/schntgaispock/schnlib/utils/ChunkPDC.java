@@ -10,6 +10,9 @@ import com.google.gson.JsonObject;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
 import lombok.experimental.UtilityClass;
 
+/**
+ * Stores block information inside of its chunk's PDC
+ */
 @UtilityClass
 public class ChunkPDC {
 

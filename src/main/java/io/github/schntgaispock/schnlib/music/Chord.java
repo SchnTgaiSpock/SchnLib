@@ -11,9 +11,6 @@ import lombok.Getter;
  */
 public class Chord {
 
-    /**
-     * Test
-     */
     private final @Getter float volume;
     private final @Getter float[] pitches;
 

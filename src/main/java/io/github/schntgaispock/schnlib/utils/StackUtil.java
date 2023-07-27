@@ -9,7 +9,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class StackUtils {
+public class StackUtil {
 
     public static int hashIgnoreAmount(@Nullable ItemStack item) {
         if (item == null) return 0;

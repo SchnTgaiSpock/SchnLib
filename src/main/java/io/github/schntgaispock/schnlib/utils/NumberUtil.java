@@ -32,6 +32,12 @@ public class NumberUtil {
         return random.nextDouble(1) < chance;
     }
 
+    /**
+     * Randomly rounds x up or down, preferring the integer it is closer to
+     * 
+     * @param x
+     * @return
+     */
     public static int randomRound(double x) {
         final int f = (int) Math.floor(x);
         final int c = (int) Math.ceil(x);

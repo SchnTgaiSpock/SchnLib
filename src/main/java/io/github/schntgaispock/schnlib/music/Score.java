@@ -15,12 +15,18 @@ import io.github.schntgaispock.schnlib.SchnLib;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Holds all the information about a single piece.
+ */
 @Getter
 @RequiredArgsConstructor
 public class Score {
 
     private static final @Getter Map<UUID, Score> listeners = new HashMap<>();
 
+    private final String title;
+    private final String author;
+    private final String arranger;
     private final List<Track> tracks = new ArrayList<>();
     private final List<Integer> durations = new ArrayList<>();
     private final int ticksPerBeat;
@@ -48,8 +54,12 @@ public class Score {
 
     };
 
-    public Score(int ticksPerBeat, int repeatStart) {
-        this(ticksPerBeat, repeatStart, -1, -1);
+    public Score(String title, String author, String arranger, int ticksPerBeat, int repeatStart) {
+        this(title, author, arranger, ticksPerBeat, repeatStart, -1, -1);
+    }
+
+    public Score(String title, String author, int ticksPerBeat, int repeatStart) {
+        this(title, author, null, ticksPerBeat, repeatStart, -1, -1);
     }
 
     public Track track(Track track) {

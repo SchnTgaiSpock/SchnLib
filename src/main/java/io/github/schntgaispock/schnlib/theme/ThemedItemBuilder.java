@@ -20,23 +20,24 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class ThemedItemBuilder {
 
-    private final @Getter ChatColor nameColor;
-    private final @Getter ChatColor loreColor;
-    private final @Getter ChatColor highlightColor;
-    private final @Getter ChatColor subtitleColor;
-    private final @Getter ChatColor suffixColor;
-    private final @Getter EnumSet<ItemThemeFlags> flags;
-    private final @Getter String prefix;
+    private final ChatColor nameColor;
+    private final ChatColor loreColor;
+    private final ChatColor highlightColor;
+    private final ChatColor subtitleColor;
+    private final ChatColor suffixColor;
+    private final EnumSet<ItemThemeFlags> flags;
 
-    private @Getter @Nullable Material material;
-    private @Getter @Nullable String texture;
-    private @Getter String name;
-    private @Getter String id;
-    private @Getter List<String> lore;
-    private boolean hasSubtitle = false;
+    private @Nullable Material material;
+    private @Nullable String texture;
+    private String name;
+    private String id;
+    private List<String> lore;
+    private @Nullable String subtitle;
+    private @Nullable String suffix;
 
     @Nonnull
     public ThemedItemBuilder material(@Nonnull Material material) {
@@ -64,17 +65,13 @@ public class ThemedItemBuilder {
 
     @Nonnull
     public ThemedItemBuilder id(@Nonnull String id) {
-        this.id = prefix != null ? prefix + "_" + id : id;
+        this.id = ItemTheme.getIdPrefix() != null ? ItemTheme.getIdPrefix() + "_" + id : id;
         return this;
     }
 
     @Nonnull
     public ThemedItemBuilder subtitle(@Nonnull String subtitle) {
-        lore.add(subtitleColor + subtitle);
-        if (!flags.contains(ItemThemeFlags.NO_SPACE_AFTER_NAME)) {
-            lore.add("");
-        }
-        hasSubtitle = true;
+        this.subtitle = subtitle;
         return this;
     }
 
@@ -111,17 +108,24 @@ public class ThemedItemBuilder {
 
     @Nonnull
     public ThemedItemBuilder suffix(@Nonnull String suffix) {
-        this.lore.add(suffixColor + suffix);
+        this.suffix = suffix;
         return this;
     }
 
     @Nonnull
-    private String[] getFormattedLore() {
+    protected String[] getFormattedLore() {
         final List<String> formattedLore = new ArrayList<>();
-        if (!hasSubtitle && !flags.contains(ItemThemeFlags.NO_SPACE_AFTER_NAME)) {
+        if (subtitle != null) {
+            lore.add(subtitleColor + subtitle);
+        }
+        if (!flags.contains(ItemThemeFlags.NO_SPACE_AFTER_NAME)) {
             formattedLore.add("");
         }
         formattedLore.addAll(lore);
+        if (!flags.contains(ItemThemeFlags.NO_SPACE_BETWEEN_PARAGRAPHS)) {
+            formattedLore.add("");
+        }
+        formattedLore.add(suffixColor + suffix);
         return formattedLore.toArray(String[]::new);
     }
 
