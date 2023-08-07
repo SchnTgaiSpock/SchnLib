@@ -13,5 +13,9 @@ public class UnplaceableItem extends SlimefunItem implements NotPlaceable {
     public UnplaceableItem(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
     }
+
+    public UnplaceableItem(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack output) {
+        super(itemGroup, item, recipeType, recipe, output);
+    }
     
 }

@@ -18,8 +18,8 @@ public class UnplaceableSolid extends SlimefunItem {
         super(itemGroup, item, recipeType, recipe);
     }
 
-    public UnplaceableSolid(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeDisplayOutput) {
-        super(itemGroup, item, recipeType, recipe, recipeDisplayOutput);
+    public UnplaceableSolid(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack output) {
+        super(itemGroup, item, recipeType, recipe, output);
     }
     
     @Override
