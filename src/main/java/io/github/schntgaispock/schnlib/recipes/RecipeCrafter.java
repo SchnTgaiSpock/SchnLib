@@ -12,7 +12,7 @@ public interface RecipeCrafter {
 
     public @Nonnull RecipeType getRecipeType();
 
-    public default boolean canCraft(@Nonnull Recipe<RecipeIngredients, RecipeOutput> recipe) { return true; }
+    public default boolean canCraft(@Nonnull Recipe<? extends RecipeIngredients, ? extends RecipeOutput> recipe) { return true; }
 
     public default @Nonnull ItemStack[] attemptCraft(
         @Nonnull ItemStack[] ingredients,
@@ -20,7 +20,7 @@ public interface RecipeCrafter {
         boolean cache,
         int hash
     ) {
-        final Recipe<RecipeIngredients, RecipeOutput> result = Recipe.searchRecipes(getRecipeType(), ingredients, this::canCraft, consumeIngredients, cache, hash);
+        final Recipe<? extends RecipeIngredients, ? extends RecipeOutput> result = Recipe.searchRecipes(getRecipeType(), ingredients, this::canCraft, consumeIngredients, cache, hash);
         return result == null ? new ItemStack[0] : result.getOutputs();
     }
 

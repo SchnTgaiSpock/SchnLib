@@ -21,7 +21,7 @@ public class GroupRecipeComponent implements RecipeComponent<Set<ItemStack>> {
 
     @Override
     public boolean matches(@Nullable ItemStack item) {
-        return getComponent().stream().anyMatch(comp -> ItemUtils.canStack(comp, item));
+        return component.stream().anyMatch(comp -> ItemUtils.canStack(comp, item));
     }
 
     @Override

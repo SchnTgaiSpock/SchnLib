@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import lombok.Getter;
 
@@ -20,12 +19,15 @@ public class TagRecipeComponent implements RecipeComponent<SlimefunTag> {
 
     @Override
     public boolean matches(@Nullable ItemStack item) {
-        return getComponent().getValues().stream().anyMatch(mat -> ItemUtils.canStack(new ItemStack(mat), item));
+        if (item == null || (item.hasItemMeta() && item.getItemMeta().hasDisplayName())) {
+            return false;
+        }
+        return component.isTagged(item.getType());
     }
 
     @Override
     public boolean isEmpty() {
-        return getComponent().isEmpty();
+        return component.isEmpty();
     }
 
     @Override

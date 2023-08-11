@@ -26,14 +26,14 @@ public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
 
     public static final Map<
         RecipeType, 
-        List<Recipe<RecipeIngredients, RecipeOutput>>
+        List<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>>
     > recipes = new HashMap<>();
     private static final int CACHE_SIZE = 50;
     public static final Map<
         Integer, 
-        Recipe<RecipeIngredients, RecipeOutput>
+        Recipe<? extends RecipeIngredients, ? extends RecipeOutput>
     > recentlyUsed = new LinkedHashMap<>(CACHE_SIZE, 0.75f, true) {
-        protected boolean removeEldestEntry(Map.Entry<Integer, Recipe<RecipeIngredients, RecipeOutput>> eldest) {
+        protected boolean removeEldestEntry(Map.Entry<Integer, Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> eldest) {
             return size() >= CACHE_SIZE;
         };
     };
@@ -49,21 +49,21 @@ public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
         return outputs.getOutputs();
     }
 
-    @ParametersAreNonnullByDefault
-    public static @Nullable Recipe<RecipeIngredients, RecipeOutput> searchRecipes(
+    @ParametersAreNonnullByDefault // wtf java
+    public static @Nullable Recipe<? extends RecipeIngredients, ? extends RecipeOutput> searchRecipes(
         RecipeType type,
         ItemStack[] ingredients,
-        @Nullable Predicate<Recipe<RecipeIngredients, RecipeOutput>> canCraft,
+        @Nullable Predicate<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> canCraft,
         boolean consumeIngredients,
         boolean cache,
         int hash
     ) {
         if (recentlyUsed.containsKey(hash)) {
-            final Recipe<RecipeIngredients, RecipeOutput> recipe = recentlyUsed.get(hash);
+            final Recipe<? extends RecipeIngredients, ? extends RecipeOutput> recipe = recentlyUsed.get(hash);
             return canCraft.test(recipe) ? recipe : null;
         }
 
-        for (Recipe<RecipeIngredients, RecipeOutput> recipe : recipes.get(type)) {
+        for (Recipe<? extends RecipeIngredients, ? extends RecipeOutput> recipe : recipes.get(type)) {
             if (canCraft != null && canCraft.test(recipe) && recipe.matches(ingredients, consumeIngredients)) {
                 if (cache) {
                     recentlyUsed.put(hash, recipe);
@@ -76,10 +76,10 @@ public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
     }
 
     @ParametersAreNonnullByDefault
-    public static @Nullable Recipe<RecipeIngredients, RecipeOutput> searchRecipes(
+    public static @Nullable Recipe<? extends RecipeIngredients, ? extends RecipeOutput> searchRecipes(
         RecipeType type,
         ItemStack[] ingredients,
-        @Nullable Predicate<Recipe<RecipeIngredients, RecipeOutput>> canCraft,
+        @Nullable Predicate<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> canCraft,
         boolean consumeIngredients
     ) {
         int hash = 1;
@@ -91,16 +91,16 @@ public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
     }
 
     @ParametersAreNonnullByDefault
-    public static @Nullable Recipe<RecipeIngredients, RecipeOutput> searchRecipes(
+    public static @Nullable Recipe<? extends RecipeIngredients, ? extends RecipeOutput> searchRecipes(
         RecipeType type, 
         ItemStack[] ingredients,
-        @Nullable Predicate<Recipe<RecipeIngredients, RecipeOutput>> canCraft
+        @Nullable Predicate<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> canCraft
     ) {
         return searchRecipes(type, ingredients, canCraft, true);
     }
 
     @ParametersAreNonnullByDefault
-    public static @Nullable Recipe<RecipeIngredients, RecipeOutput> searchRecipes(
+    public static @Nullable Recipe<? extends RecipeIngredients, ? extends RecipeOutput> searchRecipes(
         RecipeType type, 
         ItemStack[] ingredients
     ) {
@@ -108,12 +108,12 @@ public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
     }
 
     @SafeVarargs
-    public static void registerRecipes(RecipeType recipeType, Recipe<RecipeIngredients, RecipeOutput>... recipes) {
-        for (Recipe<RecipeIngredients,RecipeOutput> recipe : recipes) {
+    public static void registerRecipes(RecipeType recipeType, Recipe<? extends RecipeIngredients, ? extends RecipeOutput>... recipes) {
+        for (Recipe<? extends RecipeIngredients, ? extends RecipeOutput> recipe : recipes) {
         if (Recipe.recipes.containsKey(recipeType)) {
             Recipe.recipes.get(recipeType).add(recipe);
         } else {
-            final List<Recipe<RecipeIngredients, RecipeOutput>> newList = new ArrayList<>();
+            final List<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> newList = new ArrayList<>();
             newList.add(recipe);
             Recipe.recipes.put(recipeType, newList);
         }
