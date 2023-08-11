@@ -6,6 +6,6 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class RecipeIngredients {
 
-    public abstract boolean matches(@Nonnull ItemStack[] ingredients);
+    public abstract boolean matches(@Nonnull ItemStack[] ingredients, boolean consumeIngredients);
     
 }

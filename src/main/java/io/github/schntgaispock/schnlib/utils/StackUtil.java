@@ -1,6 +1,7 @@
 package io.github.schntgaispock.schnlib.utils;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNullableByDefault;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -32,12 +33,20 @@ public class StackUtil {
         if (sfItem != null) {
             return sfItem.getId().hashCode();
         } else {
-            return item.getType().hashCode();
+            return item.hashCode();
         }
     }
 
+    /**
+     * Consistently orders item stacks (for sorting). Its order is meaningless
+     * @param item1 The first item to compare
+     * @param item2 The second item to compare
+     * @return The result of the comparison (-1, 0, or 1)
+     */
+    @ParametersAreNullableByDefault
     public static int compare(ItemStack item1, ItemStack item2) {
-        return Integer.compare(recipeHash(item1), recipeHash(item2));
+        // TODO: This is inefficient as items may be hashed multiple times during a single sort
+        return Integer.compare(hashIgnoreAmount(item1), hashIgnoreAmount(item2));
     }
 
 }

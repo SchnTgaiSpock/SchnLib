@@ -1,10 +1,16 @@
 package io.github.schntgaispock.schnlib.recipes.inputs;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import io.github.schntgaispock.schnlib.collections.IntPair;
+import io.github.schntgaispock.schnlib.collections.Pair;
 import io.github.schntgaispock.schnlib.recipes.RecipeShape;
 import io.github.schntgaispock.schnlib.recipes.components.RecipeComponent;
 import io.github.schntgaispock.schnlib.utils.CollectionUtil;
@@ -29,9 +35,9 @@ public class CraftingGrid extends RecipeIngredients {
 
             case TRANSLATED:
                 final var result = CollectionUtil.strip(
-                    ingredients, 
-                    3, 3, 
-                    comp -> comp == null || comp.isEmpty());
+                        ingredients,
+                        3, 3,
+                        comp -> comp == null || comp.isEmpty());
                 this.ingredients = result.first();
                 width = result.second().first();
                 height = result.second().second();
@@ -39,9 +45,9 @@ public class CraftingGrid extends RecipeIngredients {
 
             default:
                 this.ingredients = Arrays
-                    .stream(ingredients)
-                    .filter(comp -> comp == null || comp.isEmpty())
-                    .toArray(RecipeComponent<?>[]::new);
+                        .stream(ingredients)
+                        .filter(comp -> comp == null || comp.isEmpty())
+                        .toArray(RecipeComponent<?>[]::new);
                 height = 0;
                 width = 0;
                 break;
@@ -49,17 +55,17 @@ public class CraftingGrid extends RecipeIngredients {
     }
 
     @Override
-    public boolean matches(ItemStack[] ingredients) {
+    public boolean matches(@Nonnull ItemStack[] ingredients, boolean consumeIngredients) {
         return switch (shape) {
-            case IDENTICAL -> matchIdentical(ingredients);
-            case TRANSLATED -> matchTranslated(ingredients);
-            case SHUFFLED -> false;
-            case CONTAINING -> false;
+            case IDENTICAL -> matchIdentical(ingredients, consumeIngredients);
+            case TRANSLATED -> matchTranslated(ingredients, consumeIngredients);
+            case SHUFFLED -> matchShuffled(ingredients, consumeIngredients);
+            case CONTAINING -> matchContaining(ingredients, consumeIngredients);
             default -> false;
         };
     }
 
-    public boolean matchIdentical(ItemStack[] ingredients) {
+    public boolean matchIdentical(@Nonnull ItemStack[] ingredients, boolean consumeIngredients) {
         if (ingredients.length != width * height) {
             return false;
         }
@@ -69,22 +75,103 @@ public class CraftingGrid extends RecipeIngredients {
                 return false;
             }
         }
-        
+
+        if (consumeIngredients) {
+            for (ItemStack item : ingredients) {
+                if (item != null) {
+                    item.setAmount(item.getAmount() - 1);
+                }
+            }
+        }
+
         return true;
     }
 
-    public boolean matchTranslated(ItemStack[] ingredients) {
+    public boolean matchTranslated(@Nonnull ItemStack[] ingredients, boolean consumeIngredients) {
         if (ingredients.length != 9) {
             return false;
         }
 
-        final var result = CollectionUtil.strip(
-            ingredients, 
-            3, 3, 
-            item -> item == null || item.getType() == Material.AIR);
+        final Pair<ItemStack[], IntPair> result = CollectionUtil.strip(
+                ingredients,
+                3, 3,
+                item -> item == null || item.getType() == Material.AIR);
         ItemStack[] reduced = result.first();
 
-        return matchIdentical(reduced);
+        return matchIdentical(reduced, consumeIngredients);
+    }
+
+    public boolean matchShuffled(@Nonnull ItemStack[] ingredients, boolean consumeIngredients) {
+        final ItemStack[] givenIngredients = Arrays
+                .stream(ingredients)
+                .filter(ingredient -> ingredient == null || ingredient.getType() == Material.AIR)
+                .toArray(ItemStack[]::new);
+
+        if (givenIngredients.length != this.ingredients.length) {
+            return false;
+        }
+
+        final Set<Integer> recipeIngredientsMatched = new HashSet<>();
+
+        for (ItemStack givenIngredient : givenIngredients) {
+            for (int i = 0; i < this.ingredients.length; i++) {
+                if (recipeIngredientsMatched.contains(i)) {
+                    continue;
+                }
+
+                if (this.ingredients[i].matches(givenIngredient)) {
+                    recipeIngredientsMatched.add(i);
+                }
+            }
+        }
+
+        final boolean matched = recipeIngredientsMatched.size() == this.ingredients.length;
+
+        if (matched && consumeIngredients) {
+            for (ItemStack item : givenIngredients) {
+                item.setAmount(item.getAmount());
+            }
+        }
+
+        return matched;
+    }
+
+    public boolean matchContaining(@Nonnull ItemStack[] ingredients, boolean consumeIngredients) {
+        final ItemStack[] givenIngredients = Arrays
+                .stream(ingredients)
+                .filter(ingredient -> ingredient == null || ingredient.getType() == Material.AIR)
+                .toArray(ItemStack[]::new);
+
+        if (givenIngredients.length < this.ingredients.length) {
+            return false;
+        }
+
+        final Set<Integer> givenIngredientsMatched = new HashSet<>();
+        final Set<Integer> recipeIngredientsMatched = new HashSet<>();
+
+        for (int i = 0; i < givenIngredients.length; i++) {
+            for (int j = 0; j < this.ingredients.length; j++) {
+                if (recipeIngredientsMatched.contains(j)) {
+                    continue;
+                }
+
+                if (this.ingredients[j].matches(givenIngredients[i])) {
+                    givenIngredientsMatched.add(i);
+                    recipeIngredientsMatched.add(j);
+                }
+            }
+        }
+
+        final boolean matched = recipeIngredientsMatched.size() == this.ingredients.length;
+
+        if (matched && consumeIngredients) {
+            givenIngredientsMatched.stream().forEach(i -> {
+                final ItemStack item = givenIngredients[i];
+                item.setAmount(item.getAmount() - 1);
+            });
+        }
+
+        return matched;
     }
 
 }
