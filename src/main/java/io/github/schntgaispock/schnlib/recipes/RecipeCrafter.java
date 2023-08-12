@@ -1,5 +1,8 @@
 package io.github.schntgaispock.schnlib.recipes;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import org.bukkit.inventory.ItemStack;
@@ -11,6 +14,12 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 public interface RecipeCrafter {
 
     public @Nonnull RecipeType getRecipeType();
+
+    public default List<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> getRecipes() {
+        return Recipe.getRecipes().containsKey(getRecipeType()) 
+            ? Recipe.getRecipes().get(getRecipeType()) 
+            : Collections.emptyList();
+    }
 
     public default boolean canCraft(@Nonnull Recipe<? extends RecipeIngredients, ? extends RecipeOutput> recipe) { return true; }
 

@@ -10,4 +10,5 @@ import lombok.RequiredArgsConstructor;
 public class ItemRecipeOutput implements RecipeOutput {
 
     private final ItemStack[] outputs;
+    
 }

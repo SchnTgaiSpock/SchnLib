@@ -24,12 +24,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
 
-    public static final Map<
+    private static final @Getter Map<
         RecipeType, 
         List<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>>
     > recipes = new HashMap<>();
     private static final int CACHE_SIZE = 50;
-    public static final Map<
+    private static final @Getter Map<
         Integer, 
         Recipe<? extends RecipeIngredients, ? extends RecipeOutput>
     > recentlyUsed = new LinkedHashMap<>(CACHE_SIZE, 0.75f, true) {

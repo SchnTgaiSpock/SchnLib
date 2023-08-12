@@ -2,15 +2,21 @@ package io.github.schntgaispock.schnlib.recipes;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import io.github.schntgaispock.schnlib.collections.LootTable;
 import io.github.schntgaispock.schnlib.recipes.components.GroupRecipeComponent;
 import io.github.schntgaispock.schnlib.recipes.components.RecipeComponent;
 import io.github.schntgaispock.schnlib.recipes.components.SingleRecipeComponent;
 import io.github.schntgaispock.schnlib.recipes.components.TagRecipeComponent;
+import io.github.schntgaispock.schnlib.recipes.inputs.CraftingGrid;
+import io.github.schntgaispock.schnlib.recipes.inputs.RecipeIngredients;
+import io.github.schntgaispock.schnlib.recipes.outputs.ItemRecipeOutput;
 import io.github.schntgaispock.schnlib.recipes.outputs.RecipeOutput;
+import io.github.schntgaispock.schnlib.recipes.outputs.WeightedRecipeOutput;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import lombok.Getter;
@@ -20,8 +26,9 @@ public class RecipeBuilder {
 
     private RecipeType type;
     private RecipeComponent<?>[] ingredients;
-    private RecipeShape shape;
-    private RecipeOutput output;
+    private RecipeShape shape = RecipeShape.TRANSLATED;
+    private RecipeOutput output = RecipeOutput.EMPTY;
+    private BiFunction<RecipeComponent<?>[], RecipeShape, RecipeIngredients> ingredientsProducer = CraftingGrid::new;
 
     public RecipeBuilder() {}
 
@@ -65,6 +72,25 @@ public class RecipeBuilder {
             .map(ingredient -> ingredient == null ? null : new SingleRecipeComponent(ingredient))
             .toArray(RecipeComponent<?>[]::new)
         );
+    }
+
+    public RecipeBuilder output(RecipeOutput outputs) {
+        this.output = outputs;
+        return this;
+    }
+
+    public RecipeBuilder output(ItemStack... outputs) {
+        this.output = new ItemRecipeOutput(outputs);
+        return this;
+    }
+
+    public RecipeBuilder output(LootTable<ItemStack> outputs) {
+        this.output = new WeightedRecipeOutput(outputs);
+        return this;
+    }
+
+    public Recipe<? extends RecipeIngredients, ? extends RecipeOutput> build() {
+        return new Recipe<RecipeIngredients, RecipeOutput>(ingredientsProducer.apply(ingredients, shape), output);
     }
     
 }
