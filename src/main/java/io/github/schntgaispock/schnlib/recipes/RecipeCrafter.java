@@ -15,13 +15,13 @@ public interface RecipeCrafter {
 
     public @Nonnull RecipeType getRecipeType();
 
-    public default List<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> getRecipes() {
+    public default List<Recipe> getRecipes() {
         return Recipe.getRecipes().containsKey(getRecipeType()) 
             ? Recipe.getRecipes().get(getRecipeType()) 
             : Collections.emptyList();
     }
 
-    public default boolean canCraft(@Nonnull Recipe<? extends RecipeIngredients, ? extends RecipeOutput> recipe) { return true; }
+    public default boolean canCraft(@Nonnull Recipe recipe) { return true; }
 
     public default @Nonnull ItemStack[] attemptCraft(
         @Nonnull ItemStack[] ingredients,
@@ -29,7 +29,7 @@ public interface RecipeCrafter {
         boolean cache,
         int hash
     ) {
-        final Recipe<? extends RecipeIngredients, ? extends RecipeOutput> result = Recipe.searchRecipes(getRecipeType(), ingredients, this::canCraft, consumeIngredients, cache, hash);
+        final Recipe result = Recipe.searchRecipes(getRecipeType(), ingredients, this::canCraft, consumeIngredients, cache, hash);
         return result == null ? new ItemStack[0] : result.getOutputs();
     }
 

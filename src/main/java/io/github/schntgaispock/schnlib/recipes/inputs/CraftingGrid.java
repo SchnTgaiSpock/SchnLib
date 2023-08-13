@@ -1,7 +1,9 @@
 package io.github.schntgaispock.schnlib.recipes.inputs;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -172,6 +174,16 @@ public class CraftingGrid extends RecipeIngredients {
         }
 
         return matched;
+    }
+
+    @Override
+    public Pair<ItemStack[], List<ItemStack>> getGuideDisplay() {
+        return Pair.of(
+            Arrays.stream(getIngredients())
+                .map(comp -> comp == null ? null : comp.getDisplayItem())
+                .toArray(ItemStack[]::new),
+            Collections.emptyList()
+        );
     }
 
 }

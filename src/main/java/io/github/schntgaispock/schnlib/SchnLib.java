@@ -14,30 +14,97 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class SchnLib {
 
+    /**
+     * Options that affects how SchnLib runs
+     */
     public static enum Options {
     }
 
-    private static @Getter @Nullable Plugin addon;
+    private static @Nullable Plugin addon;
+    /**
+     * Gets the currently enabled options for SchnLib
+     */
     private static @Getter Set<Options> options = EnumSet.noneOf(Options.class);
 
-    public static void registerAddon(Plugin addon) {
+    /**
+     * Sets up SchnLib with your plugin. SchnLib registers listeners and namespaced
+     * keys in your plugin's name. Currently, only the menu and music systems
+     * require
+     * a plugin instance.
+     * 
+     * @param addon A plugin instance to register listeners and namespaced keys with
+     */
+    public static void setup(Plugin addon) {
         SchnLib.addon = addon;
     }
 
+    /**
+     * Returns the addon that was given to SchnLib via SchnLib#setup, or throws an
+     * error if no addon was given.
+     * 
+     * @param errorMessage The message to give when no addon is found
+     * @return The addon that was given to SchnLib via SchnLib#setup
+     * @throws IllegalStateException If no addon was given to SchnLib to use
+     */
+    public static Plugin getAddon(String errorMessage) throws IllegalStateException {
+        if (addon == null) {
+            throw new IllegalStateException(errorMessage);
+        }
+        return addon;
+    }
+
+    /**
+     * Returns the addon that was given to SchnLib via SchnLib#setup, or throws an
+     * error if no addon was given.
+     * 
+     * @return The addon that was given to SchnLib via SchnLib#setup
+     * @throws IllegalStateException If no addon was given to SchnLib to use
+     */
+    public static Plugin getAddon() throws IllegalStateException {
+        return getAddon("Unable to retrive addon! Make sure to call SchnLib#setup() with your plugin instance!");
+    }
+
+    /**
+     * Logs a message
+     * 
+     * @param level   The level of the message
+     * @param message The message to log
+     * @param args    Format specifier string arguments
+     */
     public static void log(Level level, String message, Object... args) {
-        if (addon.getLogger() != null) {
+        if (addon != null && addon.getLogger() != null) {
             addon.getLogger().log(level, message, args);
+        } else {
+            System.out.println(String.format(message, args));
         }
     }
 
+    /**
+     * Logs an info message
+     * 
+     * @param message The message to log
+     * @param args    Format specifier string arguments
+     */
     public static void info(String message, Object... args) {
         log(Level.INFO, message, args);
     }
 
+    /**
+     * Logs an warning message
+     * 
+     * @param message The message to log
+     * @param args    Format specifier string arguments
+     */
     public static void warn(String message, Object... args) {
         log(Level.WARNING, message, args);
     }
 
+    /**
+     * Logs an error message
+     * 
+     * @param message The message to log
+     * @param args    Format specifier string arguments
+     */
     public static void error(String message, Object... args) {
         log(Level.SEVERE, message, args);
     }

@@ -71,6 +71,14 @@ public class CollectionUtil {
         }
     }
 
+    /**
+     * Returns a shallow copy of a hash map
+     * 
+     * @param <K> The type of the key
+     * @param <V> The type of the value
+     * @param map The map to copy
+     * @return A copied map
+     */
     @Nonnull
     public static <K, V> HashMap<K, V> shallowCopyHashMap(@Nonnull Map<K, V> map) {
         final HashMap<K, V> newMap = new HashMap<>();
@@ -117,13 +125,14 @@ public class CollectionUtil {
     public static <T> T choice(@Nonnull List<T> a) {
         return a.get(ThreadLocalRandom.current().nextInt(a.size()));
     }
-    
+
     /**
      * Strips a 2d (flattened) list of null values on all 4 sides
-     * @param <T> The type of the list values
-     * @param grid The flattened list to strip
-     * @param width The width of the list
-     * @param height The height of the list
+     * 
+     * @param <T>       The type of the list values
+     * @param grid      The flattened list to strip
+     * @param width     The width of the list
+     * @param height    The height of the list
      * @param isNullish If returns true, the element is considered null
      * @return A new stripped flat list along with its width and height
      */

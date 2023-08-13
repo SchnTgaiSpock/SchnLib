@@ -1,9 +1,10 @@
 package io.github.schntgaispock.schnlib.collections;
 
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
+@AllArgsConstructor( access = AccessLevel.PROTECTED )
 public class Pair<T, U> {
 
     private T first;

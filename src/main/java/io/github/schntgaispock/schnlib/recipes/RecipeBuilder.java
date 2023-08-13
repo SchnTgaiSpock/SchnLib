@@ -37,6 +37,11 @@ public class RecipeBuilder {
         return this;
     }
 
+    public RecipeBuilder shape(RecipeShape shape) {
+        this.shape = shape;
+        return this;
+    }
+
     @SuppressWarnings("unchecked")
     public RecipeBuilder ingredients(Object... ingredients) {
         this.ingredients = new RecipeComponent<?>[ingredients.length];
@@ -89,8 +94,14 @@ public class RecipeBuilder {
         return this;
     }
 
-    public Recipe<? extends RecipeIngredients, ? extends RecipeOutput> build() {
-        return new Recipe<RecipeIngredients, RecipeOutput>(ingredientsProducer.apply(ingredients, shape), output);
+    public Recipe build() {
+        return new Recipe(ingredientsProducer.apply(ingredients, shape), output);
+    }
+
+    public Recipe register() {
+        final Recipe recipe = new Recipe(ingredientsProducer.apply(ingredients, shape), output);
+        Recipe.registerRecipes(type, recipe);
+        return recipe;
     }
     
 }

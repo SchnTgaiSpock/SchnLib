@@ -44,8 +44,11 @@ public class MenuScreen implements InventoryHolder, Listener {
         preset = new ItemStack[rows * 9];
     }
 
-    public MenuScreen(String title, int rows) {
-        this(title, new NamespacedKey(SchnLib.getAddon(), title.toLowerCase().replace(" ", "_")), rows);
+    public MenuScreen(String title, int rows) throws IllegalStateException {
+        this(title, new NamespacedKey(SchnLib.getAddon(
+            "Could not automatically generate NamespacedKeys for menu \"" + 
+            title + "\"! Make sure to call SchnLib#setup() with your plugin instance!"
+        ), title.toLowerCase().replace(" ", "_")), rows);
     }
 
     @Override

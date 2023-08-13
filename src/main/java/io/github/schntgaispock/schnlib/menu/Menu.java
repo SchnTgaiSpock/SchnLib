@@ -23,10 +23,10 @@ public class Menu {
 
     private static final Map<NamespacedKey, MenuScreen> screens = new HashMap<>();
 
-    public static void register(MenuScreen... screens) {
+    public static void register(MenuScreen... screens) throws IllegalStateException {
         for (MenuScreen screen : screens) {
             Menu.screens.put(screen.getId(), screen);
-            Bukkit.getServer().getPluginManager().registerEvents(screen, SchnLib.getAddon());
+            Bukkit.getServer().getPluginManager().registerEvents(screen, SchnLib.getAddon("Could not register menu screens because SchnLib was not set up correctly! Make sure to call SchnLib#setup() with your plugin instance"));
         }
     }
 

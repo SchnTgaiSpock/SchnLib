@@ -14,32 +14,36 @@ import org.bukkit.inventory.ItemStack;
 
 import com.google.common.base.Predicate;
 
+import io.github.schntgaispock.schnlib.collections.Pair;
 import io.github.schntgaispock.schnlib.recipes.inputs.RecipeIngredients;
 import io.github.schntgaispock.schnlib.recipes.outputs.RecipeOutput;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
-public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
+public class Recipe {
 
     private static final @Getter Map<
         RecipeType, 
-        List<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>>
+        List<Recipe>
     > recipes = new HashMap<>();
     private static final int CACHE_SIZE = 50;
     private static final @Getter Map<
         Integer, 
-        Recipe<? extends RecipeIngredients, ? extends RecipeOutput>
+        Recipe
     > recentlyUsed = new LinkedHashMap<>(CACHE_SIZE, 0.75f, true) {
-        protected boolean removeEldestEntry(Map.Entry<Integer, Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> eldest) {
+        protected boolean removeEldestEntry(Map.Entry<Integer, Recipe> eldest) {
             return size() >= CACHE_SIZE;
         };
     };
 
-    final I ingredients;
-    final O outputs;
+    final RecipeIngredients ingredients;
+    final RecipeOutput outputs;
+
+    public Recipe(RecipeIngredients ingredients, RecipeOutput outputs) {
+        this.ingredients = ingredients;
+        this.outputs = outputs;
+    }
 
     public boolean matches(@Nonnull ItemStack[] ingredients, boolean consumeIngredients) {
         return this.ingredients.matches(ingredients, consumeIngredients);
@@ -49,21 +53,25 @@ public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
         return outputs.getOutputs();
     }
 
+    public Pair<ItemStack[], List<ItemStack>> getGuideDisplay() {
+        return ingredients.getGuideDisplay();
+    }
+
     @ParametersAreNonnullByDefault // wtf java
-    public static @Nullable Recipe<? extends RecipeIngredients, ? extends RecipeOutput> searchRecipes(
+    public static @Nullable Recipe searchRecipes(
         RecipeType type,
         ItemStack[] ingredients,
-        @Nullable Predicate<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> canCraft,
+        @Nullable Predicate<Recipe> canCraft,
         boolean consumeIngredients,
         boolean cache,
         int hash
     ) {
         if (recentlyUsed.containsKey(hash)) {
-            final Recipe<? extends RecipeIngredients, ? extends RecipeOutput> recipe = recentlyUsed.get(hash);
+            final Recipe recipe = recentlyUsed.get(hash);
             return canCraft.test(recipe) ? recipe : null;
         }
 
-        for (Recipe<? extends RecipeIngredients, ? extends RecipeOutput> recipe : recipes.get(type)) {
+        for (Recipe recipe : recipes.get(type)) {
             if (canCraft != null && canCraft.test(recipe) && recipe.matches(ingredients, consumeIngredients)) {
                 if (cache) {
                     recentlyUsed.put(hash, recipe);
@@ -76,10 +84,10 @@ public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
     }
 
     @ParametersAreNonnullByDefault
-    public static @Nullable Recipe<? extends RecipeIngredients, ? extends RecipeOutput> searchRecipes(
+    public static @Nullable Recipe searchRecipes(
         RecipeType type,
         ItemStack[] ingredients,
-        @Nullable Predicate<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> canCraft,
+        @Nullable Predicate<Recipe> canCraft,
         boolean consumeIngredients
     ) {
         int hash = 1;
@@ -91,16 +99,16 @@ public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
     }
 
     @ParametersAreNonnullByDefault
-    public static @Nullable Recipe<? extends RecipeIngredients, ? extends RecipeOutput> searchRecipes(
+    public static @Nullable Recipe searchRecipes(
         RecipeType type, 
         ItemStack[] ingredients,
-        @Nullable Predicate<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> canCraft
+        @Nullable Predicate<Recipe> canCraft
     ) {
         return searchRecipes(type, ingredients, canCraft, true);
     }
 
     @ParametersAreNonnullByDefault
-    public static @Nullable Recipe<? extends RecipeIngredients, ? extends RecipeOutput> searchRecipes(
+    public static @Nullable Recipe searchRecipes(
         RecipeType type, 
         ItemStack[] ingredients
     ) {
@@ -108,12 +116,12 @@ public class Recipe<I extends RecipeIngredients, O extends RecipeOutput> {
     }
 
     @SafeVarargs
-    public static void registerRecipes(RecipeType recipeType, Recipe<? extends RecipeIngredients, ? extends RecipeOutput>... recipes) {
-        for (Recipe<? extends RecipeIngredients, ? extends RecipeOutput> recipe : recipes) {
+    public static void registerRecipes(RecipeType recipeType, Recipe... recipes) {
+        for (Recipe recipe : recipes) {
         if (Recipe.recipes.containsKey(recipeType)) {
             Recipe.recipes.get(recipeType).add(recipe);
         } else {
-            final List<Recipe<? extends RecipeIngredients, ? extends RecipeOutput>> newList = new ArrayList<>();
+            final List<Recipe> newList = new ArrayList<>();
             newList.add(recipe);
             Recipe.recipes.put(recipeType, newList);
         }
