@@ -7,8 +7,6 @@ import javax.annotation.Nonnull;
 
 import org.bukkit.inventory.ItemStack;
 
-import io.github.schntgaispock.schnlib.recipes.inputs.RecipeIngredients;
-import io.github.schntgaispock.schnlib.recipes.outputs.RecipeOutput;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 
 public interface RecipeCrafter {
