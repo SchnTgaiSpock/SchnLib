@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.schntgaispock.schnlib</groupId>
     <artifactId>SchnLib</artifactId>
-    <version>0.3.1</version>
+    <version>0.4.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -141,20 +141,6 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.MockBukkit</groupId>
-            <artifactId>MockBukkit</artifactId>
-            <version>v1.20-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.1</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
