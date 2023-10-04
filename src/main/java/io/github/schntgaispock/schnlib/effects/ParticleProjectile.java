@@ -7,40 +7,26 @@ import org.bukkit.entity.Entity;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
+import io.github.schntgaispock.schnlib.effects.runnables.DirectionalRunnable;
 import lombok.Getter;
 
-public abstract class ParticleProjectile extends ParticleAnimation {
+public abstract class ParticleProjectile extends AbstractAnimation<DirectionalRunnable> {
 
-    private final @Getter BoundingBox[] hitboxes;
+    private final @Getter BoundingBox hitbox;
     private final double[] searchBox;
-    private final int hits;
-    private Vector direction;
+    private final int maxHits;
     private final Vector gravity;
     private final double drag;
 
     public ParticleProjectile(int duration, int period, boolean isAsync, 
-            Vector gravity, double drag, int hits, BoundingBox... hitboxes) {
+            Vector gravity, double drag, int maxHits, BoundingBox hitbox) {
         super(duration, period, isAsync);
 
         this.gravity = gravity;
         this.drag = drag;
-        this.hits = hits;
-        this.hitboxes = hitboxes;
-        double searchX = 0.1;
-        double searchY = 0.1;
-        double searchZ = 0.1;
-        for (BoundingBox hitbox : hitboxes) {
-            if (hitbox.getWidthX() > searchX) {
-                searchX = hitbox.getWidthX();
-            }
-            if (hitbox.getHeight() > searchY) {
-                searchY = hitbox.getHeight();
-            }
-            if (hitbox.getWidthZ() > searchZ) {
-                searchZ = hitbox.getWidthZ();
-            }
-        }
-        this.searchBox = new double[] { searchX, searchY, searchZ };
+        this.maxHits = maxHits;
+        this.hitbox = hitbox;
+        this.searchBox = new double[] { hitbox.getWidthX(), hitbox.getHeight(), hitbox.getWidthZ() };
     }
 
     /**
@@ -56,7 +42,20 @@ public abstract class ParticleProjectile extends ParticleAnimation {
     public abstract boolean animate(Location location, Vector direcion);
 
     @Override
-    public boolean tick(Entity source, Location location, int currentTick) {
+    public DirectionalRunnable getRunnable(Entity animationSource, Location startLocation) {
+        return new DirectionalRunnable(animationSource, startLocation, getDuration(), animationSource.getLocation().getDirection()) {
+            @Override
+            public boolean tick() {
+                return ParticleProjectile.this.tick(this);
+            }
+        };
+    }
+
+    @Override
+    public boolean tick(DirectionalRunnable runnable) {
+        final Location location = runnable.getLocation();
+        final Entity source = runnable.getSource();
+        final Vector direction = runnable.getDirection();
 
         animate(location, direction);
         direction.add(gravity);
@@ -68,17 +67,16 @@ public abstract class ParticleProjectile extends ParticleAnimation {
 
         final Collection<Entity> nearbyEntities = location
             .getWorld()
-            .getNearbyEntities(location, searchBox[0]/2, searchBox[1]/2, searchBox[2]/2, entity -> {
-                for (BoundingBox hitbox : hitboxes) {
-                    if (hitbox.overlaps(entity.getBoundingBox())) return true;
-                }
-                return false;
-            });
+            .getNearbyEntities(
+                location, 
+                searchBox[0]/2, searchBox[1]/2, searchBox[2]/2,
+                entity -> hitbox.overlaps(entity.getBoundingBox())
+            );
 
         nearbyEntities.remove(source);
         int hitEntities = 0;
         for (Entity entity : nearbyEntities) {
-            if (++hitEntities > hits) {
+            if (++hitEntities > maxHits) {
                 return true;
             }
 

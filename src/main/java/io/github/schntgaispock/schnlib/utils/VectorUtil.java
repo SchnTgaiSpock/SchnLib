@@ -8,7 +8,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class VectorUtil {
 
-    
     public static Pair<Vector, Vector> getOrthonormalPlane(Vector normal) {
         if (normal.lengthSquared() == 0) {
             return Pair.of(normal, normal);
