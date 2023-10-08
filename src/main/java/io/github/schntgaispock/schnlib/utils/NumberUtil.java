@@ -48,7 +48,7 @@ public class NumberUtil {
         if (x >= 4000 || x == 0)
             return Integer.toString(x);
         if (x < 0)
-            return asRomanNumeral(-x);
+            return "-" + asRomanNumeral(-x);
         String[] thousands = { "", "M", "MM", "MMM" };
         String[] hundreds = { "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM" };
         String[] tens = { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" };
