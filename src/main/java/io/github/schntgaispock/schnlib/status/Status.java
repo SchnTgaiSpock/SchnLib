@@ -1,16 +1,13 @@
 package io.github.schntgaispock.schnlib.status;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiPredicate;
-
-import javax.annotation.Nullable;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
-import io.github.schntgaispock.schnlib.SchnLib;
 import io.github.schntgaispock.schnlib.collections.Pair;
 import lombok.Getter;
 
@@ -21,26 +18,17 @@ public class Status implements Listener {
      * Maximum duration in seconds
      */
     private final @Getter int maxDuration = -1;
-    public final @Getter Map<StatusHolder<?>, Pair<Long, Integer>> holders = new HashMap<>();
+    private final Map<StatusHolder<?>, Pair<Long, Integer>> holders = new HashMap<>();
 
-    public void regsiter() {
-        Bukkit.getPluginManager().registerEvents(this, SchnLib.getAddon());
+    public void register(Plugin addon) {
+        Bukkit.getPluginManager().registerEvents(this, addon);
     }
 
-    public Map<StatusHolder<?>, Pair<Long, Integer>> getHolders(@Nullable BiPredicate<StatusHolder<?>, Pair<Long, Integer>> filter) {
-        final Map<StatusHolder<?>, Pair<Long, Integer>> filteredHolders = new HashMap<>();
+    public Map<StatusHolder<?>, Pair<Long, Integer>> getHolders() {
         final long currentTime = System.currentTimeMillis();
 
-        for (Map.Entry<StatusHolder<?>, Pair<Long, Integer>> holder : holders.entrySet()) {
-            if (!isExpired(holder.getValue().first(), currentTime) 
-                && filter != null 
-                && filter.test(holder.getKey(), holder.getValue())
-            ) {
-                filteredHolders.put(holder.getKey(), holder.getValue());
-            }
-        }
-
-        return filteredHolders;
+        holders.entrySet().removeIf(entry -> isExpired(entry.getValue().first(), currentTime));
+        return Collections.unmodifiableMap(holders);
     }
 
     private boolean isExpired(long applicationTime, long currentTime) {
@@ -70,15 +58,6 @@ public class Status implements Listener {
 
     public void clear(StatusHolder<?> holder) {
         holders.remove(holder);
-    }
-
-    public static void main(String[] args) {
-        new Status() {
-            @EventHandler
-            public void test() {
-
-            }
-        }.regsiter();
     }
     
 }
