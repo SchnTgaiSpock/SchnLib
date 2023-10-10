@@ -17,5 +17,5 @@ public class StatusHolder<T> {
     public boolean equals(Object obj) {
         return (obj instanceof final StatusHolder<?> other) && other.getHolder().equals(this.getHolder());
     }
-    
+
 }

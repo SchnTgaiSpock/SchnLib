@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
@@ -29,6 +32,26 @@ public class Status implements Listener {
 
         holders.entrySet().removeIf(entry -> isExpired(entry.getValue().first(), currentTime));
         return Collections.unmodifiableMap(holders);
+    }
+
+    public boolean existsOn(StatusHolder<?> holder) {
+        if (holders.containsKey(holder)) {
+            return true;
+        }
+        holders.remove(holder);
+        return false;
+    }
+
+    public boolean existsOn(Player player) {
+        return existsOn(new PlayerStatusHolder(player));
+    }
+
+    public boolean existsOn(Entity entity) {
+        return existsOn(new EntityStatusHolder(entity));
+    }
+
+    public boolean existsOn(Block block) {
+        return existsOn(new BlockStatusHolder(block));
     }
 
     private boolean isExpired(long applicationTime, long currentTime) {
@@ -56,7 +79,7 @@ public class Status implements Listener {
         applyTo(holder, 1);
     }
 
-    public void clear(StatusHolder<?> holder) {
+    public void clearFrom(StatusHolder<?> holder) {
         holders.remove(holder);
     }
     
