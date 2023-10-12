@@ -18,6 +18,7 @@ import io.github.schntgaispock.schnlib.recipes.outputs.ItemRecipeOutput;
 import io.github.schntgaispock.schnlib.recipes.outputs.RecipeOutput;
 import io.github.schntgaispock.schnlib.recipes.outputs.WeightedRecipeOutput;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import lombok.Getter;
 
@@ -106,9 +107,18 @@ public class RecipeBuilder {
     }
 
     public Recipe register() {
-        final Recipe recipe = new Recipe(ingredientsProducer.apply(ingredients, shape), output);
-        Recipe.registerRecipes(type, recipe);
-        return recipe;
+        try {
+            final Recipe recipe = new Recipe(ingredientsProducer.apply(ingredients, shape), output);
+            Recipe.registerRecipes(type, recipe);
+            System.out.println("Successfully registered recipe for " + output.getOutputs()[0].toString());
+            return recipe;
+        } catch (ClassCastException e) {
+            return new Recipe(new CraftingGrid(new SingleRecipeComponent[]{
+                null, null, null, null,
+                new SingleRecipeComponent(new CustomItemStack(Material.BARRIER, "&cError in recipe")),
+                null, null, null, null
+            }, shape), output);
+        }
     }
     
 }

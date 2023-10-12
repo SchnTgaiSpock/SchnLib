@@ -40,7 +40,9 @@ public class CraftingGrid extends RecipeIngredients {
                         ingredients,
                         3, 3,
                         comp -> comp == null || comp.isEmpty());
-                this.ingredients = result.first();
+                System.out.println(result.first().getClass().getName());
+                System.out.println(RecipeComponent[].class.getName());
+                this.ingredients = result.first().toArray(RecipeComponent<?>[]::new);
                 width = result.second().first();
                 height = result.second().second();
                 break;
@@ -94,11 +96,11 @@ public class CraftingGrid extends RecipeIngredients {
             return false;
         }
 
-        final Pair<ItemStack[], IntPair> result = CollectionUtil.strip(
+        final Pair<List<ItemStack>, IntPair> result = CollectionUtil.strip(
                 ingredients,
                 3, 3,
                 item -> item == null || item.getType() == Material.AIR);
-        ItemStack[] reduced = result.first();
+        final ItemStack[] reduced = result.first().toArray(ItemStack[]::new);
 
         return matchIdentical(reduced, consumeIngredients);
     }

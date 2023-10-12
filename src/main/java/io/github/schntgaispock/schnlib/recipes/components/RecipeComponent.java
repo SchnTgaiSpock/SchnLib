@@ -5,11 +5,14 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 
 public interface RecipeComponent<T> {
+
+    public static SingleRecipeComponent empty = new SingleRecipeComponent(new ItemStack(Material.AIR));
 
     public @Nonnull T getComponent();
     public boolean matches(@Nullable ItemStack item);
@@ -27,5 +30,8 @@ public interface RecipeComponent<T> {
     public static @Nonnull TagRecipeComponent of(@Nonnull SlimefunTag tag) {
         return new TagRecipeComponent(tag);
     }
+
+    @Override
+    public String toString();
     
 }

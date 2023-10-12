@@ -34,5 +34,10 @@ public class GroupRecipeComponent implements RecipeComponent<Set<ItemStack>> {
         if (isEmpty()) return null;
         return component.stream().findFirst().get().clone();
     }
+
+    @Override
+    public String toString() {
+        return "GroupRecipeComponent(" + getComponent().toString() + ")";
+    }
     
 }

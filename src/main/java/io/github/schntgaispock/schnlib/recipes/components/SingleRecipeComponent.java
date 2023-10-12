@@ -32,5 +32,10 @@ public class SingleRecipeComponent implements RecipeComponent<ItemStack> {
     public ItemStack getDisplayItem() {
         return component.clone();
     }
+
+    @Override
+    public String toString() {
+        return "SingleRecipeComponent(" + getComponent().toString() + ")";
+    }
     
 }

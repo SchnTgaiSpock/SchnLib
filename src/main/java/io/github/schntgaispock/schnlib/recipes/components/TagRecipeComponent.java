@@ -35,5 +35,10 @@ public class TagRecipeComponent implements RecipeComponent<SlimefunTag> {
         if (isEmpty()) return null;
         return new ItemStack(component.stream().findFirst().get());
     }
+
+    @Override
+    public String toString() {
+        return "TagRecipeComponent(" + getComponent().toString() + ")";
+    }
     
 }

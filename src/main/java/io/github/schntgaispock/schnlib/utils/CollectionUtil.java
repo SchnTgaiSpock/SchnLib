@@ -1,5 +1,6 @@
 package io.github.schntgaispock.schnlib.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -136,10 +137,9 @@ public class CollectionUtil {
      * @param isNullish If returns true, the element is considered null
      * @return A new stripped flat list along with its width and height
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Pair<T[], IntPair> strip(T[] grid, int width, int height, Predicate<T> isNullish) {
+    public static <T> Pair<List<T>, IntPair> strip(T[] grid, int width, int height, Predicate<T> isNullish) {
         if (grid.length != width * height) {
-            return Pair.of(grid, IntPair.of(width, height));
+            return Pair.of(Arrays.asList(grid), IntPair.of(width, height));
         }
 
         int startX = 0;
@@ -189,20 +189,19 @@ public class CollectionUtil {
             h--;
         }
 
-        // Yes, jank, I know
-        final T[] newGrid = (T[]) new Object[w * h];
+        final List<T> newGrid = new ArrayList<>(w * h);
 
         // Copying over
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
-                newGrid[w * y + x] = grid[width * (startY + y) + startX + x];
+                newGrid.add(w * y + x, grid[width * (startY + y) + startX + x]);
             }
         }
 
         return Pair.of(newGrid, IntPair.of(w, h));
     }
 
-    public static <T> Pair<T[], IntPair> strip(T[] grid, int width, int height) {
+    public static <T> Pair<List<T>, IntPair> strip(T[] grid, int width, int height) {
         return strip(grid, width, height, val -> val == null);
     }
 
