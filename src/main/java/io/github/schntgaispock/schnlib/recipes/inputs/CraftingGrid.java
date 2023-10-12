@@ -40,8 +40,6 @@ public class CraftingGrid extends RecipeIngredients {
                         ingredients,
                         3, 3,
                         comp -> comp == null || comp.isEmpty());
-                System.out.println(result.first().getClass().getName());
-                System.out.println(RecipeComponent[].class.getName());
                 this.ingredients = result.first().toArray(RecipeComponent<?>[]::new);
                 width = result.second().first();
                 height = result.second().second();
