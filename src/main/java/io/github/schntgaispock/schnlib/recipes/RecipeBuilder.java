@@ -79,6 +79,13 @@ public class RecipeBuilder {
         );
     }
 
+    public RecipeBuilder ingredients(Material... ingredients) {
+        return ingredients(Arrays.stream(ingredients)
+            .map(ingredient -> ingredient == null ? null : new SingleRecipeComponent(new ItemStack(ingredient)))
+            .toArray(RecipeComponent<?>[]::new)
+        );
+    }
+
     public RecipeBuilder output(RecipeOutput outputs) {
         this.output = outputs;
         return this;
