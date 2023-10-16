@@ -46,15 +46,31 @@ public class ItemTheme {
     }
 
     @Nonnull
+    public ItemTheme nameColor(@Nonnull String color) {
+        return nameColor(ChatColor.of(color));
+    }
+
+    @Nonnull
     public ItemTheme loreColor(@Nonnull ChatColor color) {
         loreColor = color;
         return this;
     }
 
     @Nonnull
+    public ItemTheme loreColor(@Nonnull String color) {
+        return loreColor(ChatColor.of(color));
+    }
+
+
+    @Nonnull
     public ItemTheme highlightColor(@Nonnull ChatColor color) {
         highlightColor = color;
         return this;
+    }
+
+    @Nonnull
+    public ItemTheme highlightColor(@Nonnull String color) {
+        return highlightColor(ChatColor.of(color));
     }
 
     @Nonnull
@@ -64,9 +80,19 @@ public class ItemTheme {
     }
 
     @Nonnull
+    public ItemTheme subtitleColor(@Nonnull String color) {
+        return subtitleColor(ChatColor.of(color));
+    }
+
+    @Nonnull
     public ItemTheme suffixColor(@Nonnull ChatColor color) {
         suffixColor = color;
         return this;
+    }
+
+    @Nonnull
+    public ItemTheme suffixColor(@Nonnull String color) {
+        return suffixColor(ChatColor.of(color));
     }
 
     @Nonnull
