@@ -9,13 +9,12 @@ import lombok.Getter;
 @Getter
 public abstract class DirectionalRunnable extends AnimationRunnable {
 
+    private final Vector direction;
+
     public DirectionalRunnable(Entity source, Location location, int totalTicks, Vector direction) {
         super(source, location, totalTicks);
         
         this.direction = direction;
     }
-
-    private Vector direction;
-    
 
 }

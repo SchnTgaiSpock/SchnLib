@@ -1,17 +1,22 @@
 package io.github.schntgaispock.schnlib.status;
 
-import java.util.UUID;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
+import javax.annotation.Nullable;
 
 import org.bukkit.entity.Entity;
 
-public class EntityStatusHolder extends StatusHolder<UUID> {
+public class EntityStatusHolder implements StatusHolder {
+
+    private final Reference<Entity> holder;
 
     public EntityStatusHolder(Entity holder) {
-        super(holder.getUniqueId());
+        this.holder = new WeakReference<>(holder);
     }
 
-    public EntityStatusHolder(UUID holder) {
-        super(holder);
+    public @Nullable Entity getHolder() {
+        return holder.get();
     }
     
 }

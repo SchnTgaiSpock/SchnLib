@@ -90,8 +90,8 @@ public class NumberUtil {
      * @return The rounded number
      */
     public static double roundToPrecision(double x, int precision) {
-        final double magn = Math.pow(10, precision);
-        return Math.round(x * magn) / magn;
+        final double magnitude = Math.pow(10, precision);
+        return Math.round(x * magnitude) / magnitude;
     }
 
     /**

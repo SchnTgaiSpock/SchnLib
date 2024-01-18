@@ -29,18 +29,18 @@ public class RecipeShapes {
      *         <table>
      *         <tr>
      *         <td><code>A</code></td>
-     *         <td><code>_</code></td>
-     *         <td><code>_</code></td>
+     *         <td><code>-</code></td>
+     *         <td><code>-</code></td>
      *         </tr>
      *         <tr>
-     *         <td><code>_</code></td>
-     *         <td><code>_</code></td>
-     *         <td><code>_</code></td>
+     *         <td><code>-</code></td>
+     *         <td><code>-</code></td>
+     *         <td><code>-</code></td>
      *         </tr>
      *         <tr>
-     *         <td><code>_</code></td>
-     *         <td><code>_</code></td>
-     *         <td><code>_</code></td>
+     *         <td><code>-</code></td>
+     *         <td><code>-</code></td>
+     *         <td><code>-</code></td>
      *         </tr>
      *         </table>
      */
@@ -57,19 +57,19 @@ public class RecipeShapes {
      * @return An array with the following:
      *         <table>
      *         <tr>
-     *         <td><code>_</code></td>
-     *         <td><code>_</code></td>
-     *         <td><code>_</code></td>
+     *         <td><code>-</code></td>
+     *         <td><code>-</code></td>
+     *         <td><code>-</code></td>
      *         </tr>
      *         <tr>
-     *         <td><code>_</code></td>
+     *         <td><code>-</code></td>
      *         <td><code>A</code></td>
-     *         <td><code>_</code></td>
+     *         <td><code>-</code></td>
      *         </tr>
      *         <tr>
-     *         <td><code>_</code></td>
-     *         <td><code>_</code></td>
-     *         <td><code>_</code></td>
+     *         <td><code>-</code></td>
+     *         <td><code>-</code></td>
+     *         <td><code>-</code></td>
      *         </tr>
      *         </table>
      */
@@ -140,7 +140,7 @@ public class RecipeShapes {
      *         </tr>
      *         <tr>
      *         <td><code>A</code></td>
-     *         <td><code>_</code></td>
+     *         <td><code>-</code></td>
      *         <td><code>A</code></td>
      *         </tr>
      *         <tr>
@@ -198,7 +198,7 @@ public class RecipeShapes {
      *         </tr>
      *         <tr>
      *         <td><code>B</code></td>
-     *         <td><code>_</code></td>
+     *         <td><code>-</code></td>
      *         <td><code>B</code></td>
      *         </tr>
      *         <tr>

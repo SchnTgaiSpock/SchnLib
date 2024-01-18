@@ -17,14 +17,14 @@ public class SchnLib {
     /**
      * Options that affects how SchnLib runs
      */
-    public static enum Options {
+    public static enum SchnLibOptions {
     }
 
     private static @Nullable Plugin addon;
     /**
      * Gets the currently enabled options for SchnLib
      */
-    private static @Getter Set<Options> options = EnumSet.noneOf(Options.class);
+    private static @Getter Set<SchnLibOptions> options = EnumSet.noneOf(SchnLibOptions.class);
 
     /**
      * Sets up SchnLib with your plugin. SchnLib registers listeners and namespaced
@@ -72,11 +72,7 @@ public class SchnLib {
      * @param args    Format specifier string arguments
      */
     public static void log(Level level, String message, Object... args) {
-        if (addon != null && addon.getLogger() != null) {
-            addon.getLogger().log(level, message, args);
-        } else {
-            System.out.println(String.format(message, args));
-        }
+        getAddon().getLogger().log(level, message, args);
     }
 
     /**

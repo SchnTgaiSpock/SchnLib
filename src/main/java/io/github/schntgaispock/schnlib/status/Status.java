@@ -7,7 +7,6 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
@@ -21,29 +20,25 @@ public class Status implements Listener {
      * Maximum duration in seconds
      */
     private final @Getter int maxDuration = -1;
-    private final Map<StatusHolder<?>, Pair<Long, Integer>> holders = new HashMap<>();
+    private final Map<StatusHolder, Pair<Long, Integer>> holders = new HashMap<>();
 
     public void register(Plugin addon) {
         Bukkit.getPluginManager().registerEvents(this, addon);
     }
 
-    public Map<StatusHolder<?>, Pair<Long, Integer>> getHolders() {
+    public Map<StatusHolder, Pair<Long, Integer>> getHolders() {
         final long currentTime = System.currentTimeMillis();
 
         holders.entrySet().removeIf(entry -> isExpired(entry.getValue().first(), currentTime));
         return Collections.unmodifiableMap(holders);
     }
 
-    public boolean existsOn(StatusHolder<?> holder) {
+    public boolean existsOn(StatusHolder holder) {
         if (holders.containsKey(holder)) {
             return true;
         }
         holders.remove(holder);
         return false;
-    }
-
-    public boolean existsOn(Player player) {
-        return existsOn(new PlayerStatusHolder(player));
     }
 
     public boolean existsOn(Entity entity) {
@@ -58,7 +53,7 @@ public class Status implements Listener {
         return (getMaxDuration() != -1) && ((currentTime - applicationTime) > getMaxDuration() * 1000);
     }
 
-    public void applyTo(StatusHolder<?> holder, int stacks, boolean overrideDuration, boolean overrideStacks) {
+    public void applyTo(StatusHolder holder, int stacks, boolean overrideDuration, boolean overrideStacks) {
         final Pair<Long, Integer> oldStatus = holders.get(holder);
         final long currentTime = System.currentTimeMillis();
         final long oldApplicationTime = oldStatus == null ? currentTime : oldStatus.first();
@@ -71,15 +66,15 @@ public class Status implements Listener {
         holders.put(holder, newStatus);
     }
 
-    public void applyTo(StatusHolder<?> holder, int stacks) {
+    public void applyTo(StatusHolder holder, int stacks) {
         applyTo(holder, stacks, true, false);
     }
 
-    public void applyTo(StatusHolder<?> holder) {
+    public void applyTo(StatusHolder holder) {
         applyTo(holder, 1);
     }
 
-    public void clearFrom(StatusHolder<?> holder) {
+    public void clearFrom(StatusHolder holder) {
         holders.remove(holder);
     }
     
