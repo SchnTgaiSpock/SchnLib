@@ -20,8 +20,9 @@ public abstract class AnimationRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (!isCancelled() && (ticks > totalTicks || tick())) {
+        if (!isCancelled() && (ticks >= totalTicks || tick())) {
             cancel();
         }
+        ticks++;
     }
 }
