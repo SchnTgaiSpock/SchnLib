@@ -13,22 +13,6 @@ public abstract class ParticleAnimation extends AbstractAnimation<AnimationRunna
         super(duration, delay, period, isAsync);
     }
 
-    public ParticleAnimation(int duration, int period, boolean isAsync) {
-        super(duration, period, isAsync);
-    }
-
-    public ParticleAnimation(int duration, int period) {
-        super(duration, period);
-    }
-
-    public ParticleAnimation(int duration) {
-        super(duration);
-    }
-
-    public ParticleAnimation() {
-        super();
-    }
-
     public AnimationRunnable getRunnable(Entity animationSource, Location startLocation) {
         return new AnimationRunnable(animationSource, startLocation, getDuration()) {
             @Override

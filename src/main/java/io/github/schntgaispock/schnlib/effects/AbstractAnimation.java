@@ -17,23 +17,6 @@ public abstract class AbstractAnimation<T extends AnimationRunnable> {
     private final int delay;
     private final int period;
     private final boolean isAsync;
-    
-
-    public AbstractAnimation(int duration, int period, boolean isAsync) {
-        this(duration, 0, period, isAsync);
-    }
-
-    public AbstractAnimation(int duration, int period) {
-        this(duration, period, false);
-    }
-
-    public AbstractAnimation(int duration) {
-        this(duration, 1);
-    }
-
-    public AbstractAnimation() {
-        this(1);
-    }
 
     public abstract T getRunnable(Entity animationSource, Location startLocation);
 
