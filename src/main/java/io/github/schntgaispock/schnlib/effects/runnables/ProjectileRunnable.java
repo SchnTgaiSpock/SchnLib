@@ -9,16 +9,18 @@ import org.bukkit.util.Vector;
 import lombok.Getter;
 
 @Getter
-public abstract class ProjectileRunnable extends AnimationRunnable {
+public abstract class ProjectileRunnable<ProjectileData> extends AnimationRunnable {
 
     private final Vector velocity;
     private int hits;
+    private final ProjectileData data;
 
-    public ProjectileRunnable(Entity source, Location location, Optional<Integer> totalTicks, Vector velocity) {
+    public ProjectileRunnable(Entity source, Location location, Optional<Integer> totalTicks, Vector velocity, ProjectileData data) {
         super(source, location, totalTicks);
         
         this.velocity = velocity;
         this.hits = 0;
+        this.data = data;
     }
 
     public void addHits(int hits) {

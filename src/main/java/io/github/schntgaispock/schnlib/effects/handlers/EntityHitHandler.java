@@ -5,7 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 @FunctionalInterface
-public interface EntityHitHandler {
+public interface EntityHitHandler<ProjectileData> {
     
     /**
      * Called when this projectile hits an entity
@@ -15,5 +15,5 @@ public interface EntityHitHandler {
      * @param hitsSoFar The number of enemies hit so far
      * @return The number of hits to increment
      */
-    public int onHit(Entity source, Entity entityHit, Location location, Vector velocity, int hitsSoFar);
+    public int onHit(Entity source, Entity entityHit, Location location, Vector velocity, int hitsSoFar, ProjectileData data);
 }

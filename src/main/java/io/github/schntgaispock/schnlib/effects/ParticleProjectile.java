@@ -17,7 +17,8 @@ import io.github.schntgaispock.schnlib.effects.runnables.ProjectileRunnable;
 import lombok.Getter;
 
 @Getter
-public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRunnable> implements EntityHitHandler, ProjectileLandHandler, ProjectileLaunchHandler {
+public abstract class ParticleProjectile<ProjectileData> extends AbstractAnimation<ProjectileRunnable<ProjectileData>>
+        implements EntityHitHandler<ProjectileData>, ProjectileLandHandler<ProjectileData>, ProjectileLaunchHandler<ProjectileData> {
 
     private final double initialSpeed;
     private final Vector acceleration;
@@ -52,8 +53,12 @@ public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRun
     public abstract boolean animate(Location location, Vector velocity);
 
     @Override
-    public ProjectileRunnable getRunnable(Entity animationSource, Location startLocation) {
-        return new ProjectileRunnable(animationSource, startLocation, getDuration(), startLocation.getDirection().multiply(initialSpeed)) {
+    public ProjectileRunnable<ProjectileData> getRunnable(Entity animationSource, Location startLocation) {
+        return getRunnable(animationSource, startLocation, null);
+    }
+
+    public ProjectileRunnable<ProjectileData> getRunnable(Entity animationSource, Location startLocation, ProjectileData data) {
+        return new ProjectileRunnable<ProjectileData>(animationSource, startLocation, getDuration(), startLocation.getDirection().multiply(initialSpeed), data) {
             @Override
             public boolean tick() {
                 return ParticleProjectile.this.tick(this);
@@ -61,17 +66,17 @@ public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRun
         };
     }
 
-    @Override
-    public void init(Entity animationSource, Location startLocation) {
+    public void init(Entity animationSource, Location startLocation, ProjectileData data) {
         super.init(animationSource, startLocation);
-        onLaunch(animationSource, startLocation, startLocation.getDirection().multiply(initialSpeed));
+        onLaunch(animationSource, startLocation, startLocation.getDirection().multiply(initialSpeed), data);
     }
 
     @Override
-    public boolean tick(ProjectileRunnable runnable) {
+    public boolean tick(ProjectileRunnable<ProjectileData> runnable) {
         final Location location = runnable.getLocation();
         final Entity source = runnable.getSource();
         final Vector velocity = runnable.getVelocity();
+        final ProjectileData data = runnable.getData();
 
         for (int i = 0; i < animationsPerTick; i++) {
             if (animate(location, velocity)) {
@@ -82,7 +87,7 @@ public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRun
             velocity.multiply(drag);
             location.add(velocity);
     
-            if (location.getBlock().getType().isSolid() && onLand(source, location, velocity)) {
+            if (location.getBlock().getType().isSolid() && onLand(source, location, velocity, data)) {
                 return true;
             }
     
@@ -96,7 +101,7 @@ public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRun
     
             nearbyEntities.remove(source);
             for (final Entity entity : nearbyEntities) {
-                runnable.addHits(onHit(source, entity, location, velocity, runnable.getHits()));
+                runnable.addHits(onHit(source, entity, location, velocity, runnable.getHits(), data));
                 if (runnable.getHits() >= maxHits) {
                     return true;
                 }
@@ -104,10 +109,6 @@ public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRun
         }
 
         return false;
-    }
-
-    public static ParticleProjectileBuilder builder() {
-        return new ParticleProjectileBuilder();
     }
     
 }
