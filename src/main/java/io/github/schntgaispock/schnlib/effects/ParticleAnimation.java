@@ -1,5 +1,9 @@
 package io.github.schntgaispock.schnlib.effects;
 
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
@@ -9,7 +13,7 @@ import lombok.Getter;
 @Getter
 public abstract class ParticleAnimation extends AbstractAnimation<AnimationRunnable> {
     
-    public ParticleAnimation(int duration, int delay, int period, boolean isAsync) {
+    public ParticleAnimation(@Nonnull Optional<Integer> duration, int delay, int period, boolean isAsync) {
         super(duration, delay, period, isAsync);
     }
 

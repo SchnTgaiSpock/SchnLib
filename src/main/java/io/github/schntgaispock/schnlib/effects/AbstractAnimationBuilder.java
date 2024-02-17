@@ -1,17 +1,17 @@
 package io.github.schntgaispock.schnlib.effects;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public abstract class AbstractAnimationBuilder {
 
-    private int duration = 1;
-    private int delay = 0;
-    private int period = 1;
-    private boolean isAsync = false;
+    protected int duration = 1;
+    protected int delay = 0;
+    protected int period = 1;
+    protected boolean async = false;
+    protected boolean unlimited = false;
 
     public AbstractAnimationBuilder duration(int duration) {
         this.duration = duration;
@@ -28,8 +28,13 @@ public abstract class AbstractAnimationBuilder {
         return this;
     }
 
-    public AbstractAnimationBuilder isAsync(boolean isAsync) {
-        this.isAsync = isAsync;
+    public AbstractAnimationBuilder async(boolean isAsync) {
+        this.async = isAsync;
+        return this;
+    }
+
+    public AbstractAnimationBuilder unlimited(boolean isUnlimited) {
+        this.unlimited = isUnlimited;
         return this;
     }
     

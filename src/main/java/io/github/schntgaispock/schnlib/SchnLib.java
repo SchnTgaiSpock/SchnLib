@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 
 import lombok.Getter;
@@ -104,4 +105,9 @@ public class SchnLib {
     public static void error(String message, Object... args) {
         log(Level.SEVERE, message, args);
     }
+
+    public static NamespacedKey key(String key) {
+        return new NamespacedKey(addon, key);
+    }
+
 }

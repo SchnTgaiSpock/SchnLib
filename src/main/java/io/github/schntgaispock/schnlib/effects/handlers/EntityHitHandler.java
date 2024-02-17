@@ -2,6 +2,7 @@ package io.github.schntgaispock.schnlib.effects.handlers;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.util.Vector;
 
 @FunctionalInterface
 public interface EntityHitHandler {
@@ -14,5 +15,5 @@ public interface EntityHitHandler {
      * @param hitsSoFar The number of enemies hit so far
      * @return The number of hits to increment
      */
-    public int onHit(Entity source, Entity entityHit, Location location, int hitsSoFar);
+    public int onHit(Entity source, Entity entityHit, Location location, Vector velocity, int hitsSoFar);
 }

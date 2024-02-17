@@ -1,6 +1,9 @@
 package io.github.schntgaispock.schnlib.effects;
 
 import java.util.Collection;
+import java.util.Optional;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -9,12 +12,14 @@ import org.bukkit.util.Vector;
 
 import io.github.schntgaispock.schnlib.effects.handlers.EntityHitHandler;
 import io.github.schntgaispock.schnlib.effects.handlers.ProjectileLandHandler;
+import io.github.schntgaispock.schnlib.effects.handlers.ProjectileLaunchHandler;
 import io.github.schntgaispock.schnlib.effects.runnables.ProjectileRunnable;
 import lombok.Getter;
 
 @Getter
-public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRunnable> implements EntityHitHandler, ProjectileLandHandler {
+public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRunnable> implements EntityHitHandler, ProjectileLandHandler, ProjectileLaunchHandler {
 
+    private final double initialSpeed;
     private final Vector acceleration;
     private final double drag;
     private final int maxHits;
@@ -23,10 +28,12 @@ public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRun
     private final double zWidth;
     private final int animationsPerTick;
     
-    public ParticleProjectile(int duration, int period, boolean isAsync, 
+    @ParametersAreNonnullByDefault
+    public ParticleProjectile(Optional<Integer> duration, int period, boolean isAsync, double initialSpeed,
             Vector acceleration, double drag, int maxHits, double xWidth, double height, double zWidth, int animationsPerTick) {
         super(duration, 0, period, isAsync);
 
+        this.initialSpeed = initialSpeed;
         this.acceleration = acceleration;
         this.drag = drag;
         this.maxHits = maxHits;
@@ -36,27 +43,17 @@ public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRun
         this.animationsPerTick = animationsPerTick;
     }
 
-    @Override
-    public int onHit(Entity source, Entity entityHit, Location location, int hitsSoFar) {
-        return 1;
-    };
-
-    @Override
-    public boolean onLand(Location location) {
-        return true;
-    };
-
     /**
      * Play an animation
      * @param location The location of the projectile
-     * @param direcion The direction of the projectile
+     * @param velocity The velocity of the projectile
      * @return Whether or not to destroy this projectile
      */
-    public abstract boolean animate(Location location, Vector direcion);
+    public abstract boolean animate(Location location, Vector velocity);
 
     @Override
     public ProjectileRunnable getRunnable(Entity animationSource, Location startLocation) {
-        return new ProjectileRunnable(animationSource, startLocation, getDuration(), animationSource.getLocation().getDirection()) {
+        return new ProjectileRunnable(animationSource, startLocation, getDuration(), startLocation.getDirection().multiply(initialSpeed)) {
             @Override
             public boolean tick() {
                 return ParticleProjectile.this.tick(this);
@@ -65,21 +62,27 @@ public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRun
     }
 
     @Override
+    public void init(Entity animationSource, Location startLocation) {
+        super.init(animationSource, startLocation);
+        onLaunch(animationSource, startLocation, startLocation.getDirection().multiply(initialSpeed));
+    }
+
+    @Override
     public boolean tick(ProjectileRunnable runnable) {
         final Location location = runnable.getLocation();
         final Entity source = runnable.getSource();
-        final Vector direction = runnable.getDirection();
+        final Vector velocity = runnable.getVelocity();
 
         for (int i = 0; i < animationsPerTick; i++) {
-            if (animate(location, direction)) {
+            if (animate(location, velocity)) {
                 return true;
             };
 
-            direction.add(acceleration);
-            direction.multiply(drag);
-            location.add(direction);
+            velocity.add(acceleration);
+            velocity.multiply(drag);
+            location.add(velocity);
     
-            if (location.getBlock().getType().isSolid() && onLand(location)) {
+            if (location.getBlock().getType().isSolid() && onLand(source, location, velocity)) {
                 return true;
             }
     
@@ -93,8 +96,8 @@ public abstract class ParticleProjectile extends AbstractAnimation<ProjectileRun
     
             nearbyEntities.remove(source);
             for (final Entity entity : nearbyEntities) {
-                runnable.addHits(onHit(source, entity, location, runnable.getHits()));
-                if (runnable.getHits() > maxHits) {
+                runnable.addHits(onHit(source, entity, location, velocity, runnable.getHits()));
+                if (runnable.getHits() >= maxHits) {
                     return true;
                 }
             }

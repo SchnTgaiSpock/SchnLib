@@ -1,5 +1,6 @@
 package io.github.schntgaispock.schnlib.effects;
 
+import java.util.Optional;
 import java.util.function.BiPredicate;
 
 import org.bukkit.Location;
@@ -8,24 +9,56 @@ import org.bukkit.util.Vector;
 
 import io.github.schntgaispock.schnlib.effects.handlers.EntityHitHandler;
 import io.github.schntgaispock.schnlib.effects.handlers.ProjectileLandHandler;
-import lombok.AccessLevel;
+import io.github.schntgaispock.schnlib.effects.handlers.ProjectileLaunchHandler;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class ParticleProjectileBuilder extends AbstractAnimationBuilder {
 
-    private Vector acceleration = new Vector(0, 0, 0);
-    private double drag = 1;
-    private int maxHits = 1;
-    private double xWidth = 0.5;
-    private double height = 0.5;
-    private double zWidth = 0.5;
-    private int animationsPerTick = 1;
-    private EntityHitHandler hitHandler = (s, e, l, h) -> 1;
-    private ProjectileLandHandler landHandler = l -> true;
-    private BiPredicate<Location, Vector> animator = (l, v) -> false;
+    protected double initialSpeed = 1;
+    protected Vector acceleration = new Vector(0, 0, 0);
+    protected double drag = 1;
+    protected int maxHits = 1;
+    protected double xWidth = 0.5;
+    protected double height = 0.5;
+    protected double zWidth = 0.5;
+    protected int animationsPerTick = 1;
+    protected EntityHitHandler hitHandler = (s, e, l, d, h) -> 1;
+    protected ProjectileLandHandler landHandler = (e, l, d) -> true;
+    protected ProjectileLaunchHandler launchHandler = (e, l, d) -> {};
+    protected BiPredicate<Location, Vector> animator = (l, v) -> false;
+
+    @Override
+    public ParticleProjectileBuilder duration(int duration) {
+        return (ParticleProjectileBuilder) super.duration(duration);
+    }
+
+    @Override
+    public ParticleProjectileBuilder delay(int delay) {
+        return (ParticleProjectileBuilder) super.delay(delay);
+    }
+
+    @Override
+    public ParticleProjectileBuilder period(int period) {
+        return (ParticleProjectileBuilder) super.period(period);
+    }
+
+    @Override
+    public ParticleProjectileBuilder async(boolean isAsync) {
+        return (ParticleProjectileBuilder) super.async(isAsync);
+    }
+
+    @Override
+    public ParticleProjectileBuilder unlimited(boolean isUnlimited) {
+        return (ParticleProjectileBuilder) super.unlimited(isUnlimited);
+    }
+
+    public ParticleProjectileBuilder initialSpeed(double initialSpeed) {
+        this.initialSpeed = initialSpeed;
+        return this;
+    }
 
     public ParticleProjectileBuilder forces(Vector acceleration, double drag) {
         this.acceleration = acceleration;
@@ -60,6 +93,11 @@ public class ParticleProjectileBuilder extends AbstractAnimationBuilder {
         return this;
     }
 
+    public ParticleProjectileBuilder onLaunch(ProjectileLaunchHandler onLaunch) {
+        this.launchHandler = onLaunch;
+        return this;
+    }
+
     public ParticleProjectileBuilder animator(BiPredicate<Location, Vector> animator) {
         this.animator = animator;
         return this;
@@ -67,9 +105,10 @@ public class ParticleProjectileBuilder extends AbstractAnimationBuilder {
 
     public ParticleProjectile build() {
         return new ParticleProjectile(
-            getDuration(),
+            isUnlimited() ? Optional.empty() : Optional.of(getDuration()),
             getPeriod(),
             isAsync(),
+            initialSpeed,
             acceleration,
             drag,
             maxHits,
@@ -79,13 +118,18 @@ public class ParticleProjectileBuilder extends AbstractAnimationBuilder {
             animationsPerTick
         ) {
             @Override
-            public int onHit(Entity source, Entity entityHit, Location location, int hitsSoFar) {
-                return hitHandler.onHit(source, entityHit, location, hitsSoFar);
+            public int onHit(Entity source, Entity entityHit, Location location, Vector velocity, int hitsSoFar) {
+                return hitHandler.onHit(source, entityHit, location, velocity, hitsSoFar);
             }
 
             @Override
-            public boolean onLand(Location location) {
-                return landHandler.onLand(location);
+            public boolean onLand(Entity source, Location location, Vector velocity) {
+                return landHandler.onLand(source, location, velocity);
+            }
+
+            @Override
+            public void onLaunch(Entity source, Location startLocation, Vector velocity) {
+                launchHandler.onLaunch(source, startLocation, velocity);
             }
 
             @Override

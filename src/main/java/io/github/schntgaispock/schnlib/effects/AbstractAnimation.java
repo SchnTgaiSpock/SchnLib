@@ -1,5 +1,7 @@
 package io.github.schntgaispock.schnlib.effects;
 
+import java.util.Optional;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -13,13 +15,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class AbstractAnimation<T extends AnimationRunnable> {
     
-    private final int duration;
+    private final Optional<Integer> duration;
     private final int delay;
     private final int period;
     private final boolean isAsync;
 
     public abstract T getRunnable(Entity animationSource, Location startLocation);
-
 
     public void init(Entity animationSource, Location startLocation) {
         final BukkitRunnable animationRunnable = getRunnable(animationSource, startLocation);

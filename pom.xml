@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.schntgaispock.schnlib</groupId>
     <artifactId>SchnLib</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -128,6 +128,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.26</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
